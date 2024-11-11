@@ -1,4 +1,3 @@
-# Crypto-cpp
 # Crypto Account Management System
 
 ## Description
