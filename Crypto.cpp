@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <iomanip> // For setting width and formatting
-
 using namespace std;
 
 class Account {
@@ -15,35 +13,39 @@ private:
     vector<string> transactions;
 
 public:
-    Account() : balance(50000), ethereum(0), bitcoin(0) {}
+    Account() {
+        balance = 50000;
+        ethereum = 0;
+        bitcoin = 0;
+    }
 
     void DisplayAccountInformation() {
-        cout << "\n------------------- ACCOUNT INFORMATION -------------------\n";
+        cout << "\033[36m\n=================== ACCOUNT INFORMATION ===================\033[0m\n";
         cout << "Balance: $" << balance << endl;
         cout << "Ethereum: " << ethereum << endl;
         cout << "Bitcoin: " << bitcoin << endl;
-        cout << "----------------------------------------------------------\n\n";
+        cout << "\033[36m==========================================================\033[0m\n\n";
     }
 
     void Deposit(int money) {
         balance += money;
         transactions.push_back("Deposited: $" + to_string(money));
-        cout << "Deposit successful!\n";
+        cout << "\033[32mDeposit successful!\033[0m\n";
     }
 
     void Withdraw(int money) {
         if (money <= balance) {
             balance -= money;
             transactions.push_back("Withdrew: $" + to_string(money));
-            cout << "Withdrawal successful!\n";
+            cout << "\033[32mWithdrawal successful!\033[0m\n";
         } else {
-            cout << "Insufficient balance.\n";
+            cout << "\033[31mInsufficient balance.\033[0m\n";
         }
     }
 
     void BuyCrypto() {
         int option;
-        cout << "\n----------- BUY CRYPTOCURRENCY -----------\n";
+        cout << "\033[36m\n=========== BUY CRYPTOCURRENCY ===========\033[0m\n";
         cout << "1: Buy Ethereum\n";
         cout << "2: Buy Bitcoin\n";
         cout << "Enter your choice: ";
@@ -53,21 +55,21 @@ public:
             ethereum++;
             balance -= ethereum_value;
             transactions.push_back("+ 1 Ethereum");
-            cout << "+ 1 Ethereum purchased!\n";
+            cout << "\033[32m+ 1 Ethereum purchased!\033[0m\n";
         } else if (option == 2 && balance >= bitcoin_value) {
             bitcoin++;
             balance -= bitcoin_value;
             transactions.push_back("+ 1 Bitcoin");
-            cout << "+ 1 Bitcoin purchased!\n";
+            cout << "\033[32m+ 1 Bitcoin purchased!\033[0m\n";
         } else {
-            cout << "Not enough balance to buy the selected cryptocurrency.\n";
+            cout << "\033[31mNot enough balance to buy the selected cryptocurrency.\033[0m\n";
         }
-        cout << "------------------------------------------\n\n";
+        cout << "\033[36m==========================================\033[0m\n\n";
     }
 
     void SellCrypto() {
         int option;
-        cout << "\n----------- SELL CRYPTOCURRENCY -----------\n";
+        cout << "\033[36m\n=========== SELL CRYPTOCURRENCY ===========\033[0m\n";
         cout << "1: Sell Ethereum\n";
         cout << "2: Sell Bitcoin\n";
         cout << "Enter your choice: ";
@@ -77,28 +79,24 @@ public:
             ethereum--;
             balance += ethereum_value;
             transactions.push_back("Sold 1 Ethereum");
-            cout << "Sold 1 Ethereum!\n";
+            cout << "\033[32mSold 1 Ethereum!\033[0m\n";
         } else if (option == 2 && bitcoin > 0) {
             bitcoin--;
             balance += bitcoin_value;
             transactions.push_back("Sold 1 Bitcoin");
-            cout << "Sold 1 Bitcoin!\n";
+            cout << "\033[32mSold 1 Bitcoin!\033[0m\n";
         } else {
-            cout << "You don't have enough cryptocurrency to sell.\n";
+            cout << "\033[31mYou don't have enough cryptocurrency to sell.\033[0m\n";
         }
-        cout << "-------------------------------------------\n\n";
+        cout << "\033[36m===========================================\033[0m\n\n";
     }
 
     void TransactionHistory() {
-        cout << "\n----------- TRANSACTION HISTORY -----------\n";
-        if (transactions.empty()) {
-            cout << "No transactions yet.\n";
-        } else {
-            for (const string &transaction : transactions) {
-                cout << transaction << endl;
-            }
+        cout << "\033[36m\n=========== TRANSACTION HISTORY ===========\033[0m\n";
+        for (const string& transaction : transactions) {
+            cout << transaction << endl;
         }
-        cout << "-------------------------------------------\n\n";
+        cout << "\033[36m===========================================\033[0m\n\n";
     }
 };
 
@@ -111,7 +109,7 @@ private:
 public:
     User(string user, string pass) : username(user), password(pass) {}
 
-    bool validatePassword(const string &pass) const {
+    bool validatePassword(string pass) {
         return password == pass;
     }
 
@@ -119,7 +117,7 @@ public:
         return userAccount;
     }
 
-    string getUserName() const {
+    string getUserName() const { // Add 'const' here
         return username;
     }
 };
@@ -128,13 +126,13 @@ vector<User> users;
 
 void Register() {
     string username, password;
-    cout << "\n-------------- REGISTER --------------\n";
+    cout << "\033[36m\n============== REGISTER ==============\033[0m\n";
     cout << "Enter a username: ";
     cin >> username;
 
     for (const User &user : users) {
         if (username == user.getUserName()) {
-            cout << "Username already taken. Try again.\n";
+            cout << "\033[31mUsername already taken. Try again.\033[0m" << endl;
             return;
         }
     }
@@ -142,14 +140,14 @@ void Register() {
     cout << "Enter a password: ";
     cin >> password;
 
-    users.emplace_back(username, password);
-    cout << "Registration successful!\n";
-    cout << "--------------------------------------\n\n";
+    users.push_back(User(username, password));
+    cout << "\033[32mRegistration successful!\033[0m" << endl;
+    cout << "\033[36m======================================\033[0m\n\n";
 }
 
 Account* Login() {
     string username, password;
-    cout << "\n-------------- LOGIN --------------\n";
+    cout << "\033[36m\n============== LOGIN ==============\033[0m\n";
     cout << "Enter username: ";
     cin >> username;
     cout << "Enter password: ";
@@ -157,31 +155,39 @@ Account* Login() {
 
     for (User &user : users) {
         if (username == user.getUserName() && user.validatePassword(password)) {
-            cout << "Login successful!\n";
-            cout << "----------------------------------\n\n";
+            cout << "\033[32mLogin successful!\033[0m\n";
+            cout << "\033[36m===================================\033[0m\n\n";
             return &user.getAccount();
         }
     }
 
-    cout << "Invalid username or password.\n";
-    cout << "----------------------------------\n\n";
+    cout << "\033[31mInvalid username or password.\033[0m\n";
+    cout << "\033[36m===================================\033[0m\n\n";
     return nullptr;
+}
+
+void displayWelcomeMessage() {
+    cout << "\033[34m====================================\033[0m\n";  // Blue
+    cout << "\033[33m         WELCOME TO CRYPTO APP      \033[0m\n";  // Yellow
+    cout << "\033[34m====================================\033[0m\n\n"; // Blue
+}
+
+void displayMainMenu() {
+    cout << "\033[36m========== MAIN MENU ==========\033[0m\n";  // Cyan
+    cout << "\033[32m  1: Register\033[0m\n";                   // Green
+    cout << "\033[32m  2: Login\033[0m\n";                      // Green
+    cout << "\033[32m  3: Exit\033[0m\n";                       // Green
+    cout << "\033[36m===============================\033[0m\n"; // Cyan
+    cout << "Enter a choice: ";
 }
 
 int main() {
     int choice;
     Account* activeAccount = nullptr;
-    cout << "------------------------------------\n";
-    cout << "         WELCOME TO CRYPTO APP      \n";
-    cout << "------------------------------------\n\n";
+    displayWelcomeMessage();
 
     while (true) {
-        cout << "\n---------- MAIN MENU ----------\n";
-        cout << "  1: Register\n";
-        cout << "  2: Login\n";
-        cout << "  3: Exit\n";
-        cout << "-------------------------------\n";
-        cout << "Enter a choice: ";
+        displayMainMenu();
         cin >> choice;
 
         if (choice == 1) {
@@ -191,7 +197,7 @@ int main() {
             if (activeAccount) {
                 int innerChoice;
                 do {
-                    cout << "\n------------- ACCOUNT MENU -------------\n";
+                    cout << "\033[36m\n============= ACCOUNT MENU =============\033[0m\n";
                     cout << "1: Display Account Info\n";
                     cout << "2: Deposit Money\n";
                     cout << "3: Withdraw Money\n";
@@ -199,7 +205,7 @@ int main() {
                     cout << "5: Sell Cryptocurrency\n";
                     cout << "6: View Transaction History\n";
                     cout << "7: Logout\n";
-                    cout << "----------------------------------------\n";
+                    cout << "\033[36m========================================\033[0m\n";
                     cout << "Enter a choice: ";
                     cin >> innerChoice;
 
@@ -207,20 +213,18 @@ int main() {
                         case 1:
                             activeAccount->DisplayAccountInformation();
                             break;
-                        case 2: {
+                        case 2:
                             cout << "Enter deposit amount: $";
                             int depositAmount;
                             cin >> depositAmount;
                             activeAccount->Deposit(depositAmount);
                             break;
-                        }
-                        case 3: {
+                        case 3:
                             cout << "Enter withdrawal amount: $";
                             int withdrawAmount;
                             cin >> withdrawAmount;
                             activeAccount->Withdraw(withdrawAmount);
                             break;
-                        }
                         case 4:
                             activeAccount->BuyCrypto();
                             break;
@@ -231,18 +235,18 @@ int main() {
                             activeAccount->TransactionHistory();
                             break;
                         case 7:
-                            cout << "Logged out successfully!\n";
+                            cout << "\033[32mLogged out successfully!\033[0m\n";
                             break;
                         default:
-                            cout << "Invalid choice, try again.\n";
+                            cout << "\033[31mInvalid choice, try again.\033[0m\n";
                     }
                 } while (innerChoice != 7);
             }
         } else if (choice == 3) {
-            cout << "Goodbye!\n";
-            break;
+            cout << "\033[31mGoodbye!\033[0m\n";
+            return 0;
         } else {
-            cout << "Invalid choice, try again.\n";
+            cout << "\033[31mInvalid choice, try again.\033[0m\n";
         }
     }
     return 0;
